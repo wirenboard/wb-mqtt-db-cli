@@ -21,7 +21,7 @@ def format_value(value_str, decimal_places=None):
     if decimal_places and decimal_places >= 0:
         format_str = "%%.%df" % decimal_places
 
-        return format_str % value_str
+        return format_str % float(value_str)
     else:
         return value_str
 
@@ -147,13 +147,17 @@ def main():
             # pprint.pprint(resp)
             # print(len(resp['values']))
             for row in resp['values']:
-                writer.writerow({
-                    'channel'  : ("%s/%s" % tuple(channel)),
-                    'time'     : datetime.datetime.fromtimestamp(row['t']).strftime(args.time_format),
-                    'average'  : format_value(row['v'], args.decimal_places),
-                    'min'  : format_value(row['min'], args.decimal_places),
-                    'max'  : format_value(row['max'], args.decimal_places)
-                })
+                csvrow = dict(
+                    channel = ("%s/%s" % tuple(channel)),
+                    time    = datetime.datetime.fromtimestamp(row.get('t') or row.get('timestamp')).strftime(args.time_format),
+                    average = format_value(row.get('v') or row.get('value'), args.decimal_places)
+                )
+                if 'min' in row:
+                    csvrow['min'] = format_value(row['min'], args.decimal_places)
+                if 'max' in row:
+                    csvrow['max'] = format_value(row['max'], args.decimal_places)
+
+                writer.writerow(csvrow)
     finally:
         csvfile.close()
     

@@ -1,3 +1,9 @@
+wb-mqtt-db-cli (1.1) stable; urgency=medium
+
+  * compatibility with API v.0
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 01 Jun 2017 16:55:17 +0300
+
 wb-mqtt-db-cli (1.0) stable; urgency=medium
 
   * Initial release.
