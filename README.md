@@ -63,7 +63,7 @@ wb-adc/5Vout;2017-06-01 00:08:46.262002;5.10142857142858;5.09;5.11
 Custom time format example:
 
 ```
-python wb-mqtt-db-cli.py -h 192.168.0.175 --from "2017-06-01" --time-format="%Y/%m/%d %H:%M:%S" --decimal-places 2 --limit 10  wb-adc/5Vout 
+$ python wb-mqtt-db-cli.py -h 192.168.0.175 --from "2017-06-01" --time-format="%Y/%m/%d %H:%M:%S" --decimal-places 2 --limit 10  wb-adc/5Vout 
 channel time    average min max
 wb-adc/5Vout    2017/06/01 00:00:46 5.10    5.09    5.11
 wb-adc/5Vout    2017/06/01 00:02:46 5.10    5.09    5.11
