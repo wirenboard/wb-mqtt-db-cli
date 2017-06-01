@@ -1,0 +1,5 @@
+wb-mqtt-db-cli (1.0) stable; urgency=medium
+
+  * Initial release.
+
+ -- Evgeny Boger <boger@contactless.ru>  Thu, 01 Jun 2017 11:18:51 +0300
