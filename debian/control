@@ -7,5 +7,5 @@ Build-Depends: debhelper (>= 9), pkg-config
 
 Package: wb-mqtt-db-cli
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, mosquitto, python-mosquitto,  python-mqttrpc
+Depends: ${shlibs:Depends}, ${misc:Depends}, python-mqttrpc
 Description: CLI for wb-mqtt-db
