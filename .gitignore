@@ -99,3 +99,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+debian/files
+debian/wb-mqtt-db-cli.substvars
+debian/wb-mqtt-db-cli/
