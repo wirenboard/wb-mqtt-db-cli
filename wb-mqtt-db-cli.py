@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+from __future__ import print_function
 import time
 # import pprint
 import argparse
@@ -14,7 +14,7 @@ except ImportError:
     import paho.mqtt.client as mosquitto
 
 
-from mqttrpc.client import TMQTTRPCClient
+from mqttrpc.client import TMQTTRPCClient, MQTTRPCError
 import dateutil.parser
 
 def format_value(value_str, decimal_places=None):
@@ -28,7 +28,7 @@ def format_value(value_str, decimal_places=None):
 def main():
     parser = argparse.ArgumentParser(description='wb-mqtt-db Console Client', add_help=False, formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument('--help', action='help', 
+    parser.add_argument('--help', action='help',
                 help='show this help message and exit')
 
     parser.add_argument('-h', '--host', dest='host', type=str,
@@ -68,6 +68,7 @@ def main():
     parser.add_argument('-d', '--delimiter', dest='delimiter', type=str, help='CSV field separator', default='\t')
 
     parser.add_argument('-o', '--output-fname', dest='output_fname', type=str, help='Write result to file. "-" means stdout', default='-')
+    parser.add_argument("--timeout", dest="timeout", type=int, help="Request timeout (in seconds)")
 
     parser.add_argument('channels', metavar='DEVICE/CONTROL', type=str, nargs='+',
                         help='List of channels to request')
@@ -122,10 +123,8 @@ def main():
 
     try:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames,delimiter=args.delimiter)
-        writer.writeheader()
 
-
-        for channel in channels:
+        for i, channel in enumerate(channels):
             rpc_params =  {
                 'channels': [channel,],
 
@@ -142,7 +141,23 @@ def main():
 
             if min_interval:
                 rpc_params['min_interval'] = min_interval
-            resp =  rpc_client.call('db_logger', 'history', 'get_values', rpc_params, timeout=60)
+
+            if args.timeout:
+                rpc_params["request_timeout"] = args.timeout
+                mqtt_timeout = args.timeout + 5
+            else:
+                mqtt_timeout = 30
+
+            try:
+                resp =  rpc_client.call('db_logger', 'history', 'get_values', rpc_params, timeout=mqtt_timeout)
+            except MQTTRPCError as err:
+                if err.code == -32100:
+                    print("ERROR: Backend wb-mqtt-db failed to process request in time. Consider increasing timeout (--timeout).", file=sys.stderr)
+                    return
+                raise err
+
+            if i == 0:
+                writer.writeheader()
 
             # pprint.pprint(resp)
             # print(len(resp['values']))
@@ -160,7 +175,7 @@ def main():
                 writer.writerow(csvrow)
     finally:
         csvfile.close()
-    
+
 
 
 if __name__ == "__main__":

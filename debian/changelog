@@ -1,3 +1,9 @@
+wb-mqtt-db-cli (1.2) stable; urgency=medium
+
+  * adds support for request_timeout
+
+ -- Evgeny Boger <boger@contactless.ru>  Sun, 07 Jan 2018 23:08:27 +0300
+
 wb-mqtt-db-cli (1.1.1) stable; urgency=medium
 
   * remove dependency on python-mosquitto
