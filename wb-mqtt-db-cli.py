@@ -1,21 +1,15 @@
-#!/usr/bin/python
-from __future__ import print_function
-import time
+#!/usr/bin/python3
 # import pprint
 import argparse
 import csv
 import datetime
 import sys
+import time
 
-
-try:
-    import mosquitto
-except ImportError:
-    import paho.mqtt.client as mosquitto
-
-
-from mqttrpc.client import TMQTTRPCClient, MQTTRPCError
 import dateutil.parser
+import paho.mqtt.client as mqtt
+from mqttrpc.client import MQTTRPCError, TMQTTRPCClient
+
 
 def format_value(value_str, decimal_places=None):
     if decimal_places and decimal_places >= 0:
@@ -100,9 +94,7 @@ def main():
             parser.error("--from is greater than --to (or in future)")
         min_interval = (time_interval / args.limit).total_seconds() * 1000
 
-
-
-    client = mosquitto.Mosquitto()
+    client = mqtt.Client()
 
     if args.username:
         client.username_pw_set(args.username, args.password)
