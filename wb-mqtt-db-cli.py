@@ -140,7 +140,7 @@ def main():
             parser.error("--from is greater than --to (or in future)")
         min_interval = (time_interval / args.limit).total_seconds() * 1000
 
-    client = mqtt.Client()
+    client = mqtt.Client("wb-mqtt-db-cli")
 
     if args.username:
         client.username_pw_set(args.username, args.password)
