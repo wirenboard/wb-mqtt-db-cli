@@ -145,15 +145,13 @@ def main():
     url = urllib.parse.urlparse(args.host)
     if url.scheme == 'unix':
         client = paho_socket.Client("wb-mqtt-db-cli")
-    else:
-        client = mqtt.Client("wb-mqtt-db-cli")
-
-    if args.username:
-        client.username_pw_set(args.username, args.password)
-
-    if url.scheme == 'unix':
+        if args.username:
+            client.username_pw_set(args.username, args.password)
         client.sock_connect(url.path)
     else:
+        client = mqtt.Client("wb-mqtt-db-cli")
+        if args.username:
+            client.username_pw_set(args.username, args.password)
         client.connect(args.host, args.port)
 
     client.loop_start()
