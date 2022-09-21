@@ -5,7 +5,7 @@ Outputs at max 10 points per channel trying to evenly distribute the data points
 
 
 ```
-$ python wb-mqtt-db-cli.py -h 192.168.0.175 --from "2017-06-01" --to "2017-06-02" --decimal-places 2 --limit 10 -a  wb-adc/5Vout wb-adc/Vin
+$ wb-mqtt-db-cli -h 192.168.0.175 --from "2017-06-01" --to "2017-06-02" --decimal-places 2 --limit 10 -a  wb-adc/5Vout wb-adc/Vin
 channel time    average min max
 wb-adc/5Vout    2017-06-01 00:00:46.269996  5.10    5.09    5.11
 wb-adc/5Vout    2017-06-01 00:24:46.311995  5.10    5.09    5.11
@@ -34,7 +34,7 @@ Without "-a" switch the behaviour is different: only the first 10 data points ar
 
 
 ```
-python wb-mqtt-db-cli.py -h 192.168.0.175 --from "2017-06-01" --decimal-places 2 --limit 10  wb-adc/5Vout 
+wb-mqtt-db-cli -h 192.168.0.175 --from "2017-06-01" --decimal-places 2 --limit 10  wb-adc/5Vout 
 channel time    average min max
 wb-adc/5Vout    2017-06-01 00:00:46.269996  5.10    5.09    5.11
 wb-adc/5Vout    2017-06-01 00:02:46.265000  5.10    5.09    5.11
@@ -51,7 +51,7 @@ wb-adc/5Vout    2017-06-01 00:18:46.264983  5.10    5.09    5.11
 The custom delimiter can be specified using "-d" switch:
 
 ```
-$ python wb-mqtt-db-cli.py -h 192.168.0.175 --from "2017-06-01" --limit 5 -d';'  wb-adc/5Vout  
+$ wb-mqtt-db-cli -h 192.168.0.175 --from "2017-06-01" --limit 5 -d';'  wb-adc/5Vout  
 channel;time;average;min;max
 wb-adc/5Vout;2017-06-01 00:00:46.269996;5.10218045112783;5.09;5.11
 wb-adc/5Vout;2017-06-01 00:02:46.265000;5.10255639097746;5.09;5.11
@@ -63,7 +63,7 @@ wb-adc/5Vout;2017-06-01 00:08:46.262002;5.10142857142858;5.09;5.11
 Custom time format example:
 
 ```
-$ python wb-mqtt-db-cli.py -h 192.168.0.175 --from "2017-06-01" --time-format="%Y/%m/%d %H:%M:%S" --decimal-places 2 --limit 10  wb-adc/5Vout 
+$ wb-mqtt-db-cli -h 192.168.0.175 --from "2017-06-01" --time-format="%Y/%m/%d %H:%M:%S" --decimal-places 2 --limit 10  wb-adc/5Vout 
 channel time    average min max
 wb-adc/5Vout    2017/06/01 00:00:46 5.10    5.09    5.11
 wb-adc/5Vout    2017/06/01 00:02:46 5.10    5.09    5.11
