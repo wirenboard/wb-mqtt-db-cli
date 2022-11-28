@@ -208,20 +208,21 @@ def main():
             if i == 0:
                 writer.writeheader()
 
-            # pprint.pprint(resp)
-            # print(len(resp['values']))
-            for row in resp["values"]:
-                csvrow = dict(
-                    channel=("%s/%s" % tuple(channel)),
-                    time=datetime.datetime.fromtimestamp(row.get("t") or row.get("timestamp")).strftime(
-                        args.time_format
-                    ),
-                    average=format_value(row.get("v") or row.get("value"), args.decimal_places),
-                )
-                if "min" in row:
-                    csvrow["min"] = format_value(row["min"], args.decimal_places)
-                if "max" in row:
-                    csvrow["max"] = format_value(row["max"], args.decimal_places)
+            if len(resp["values"]) == 0:
+                print("No records for %s/%s channel" % tuple(channel))
+            else:
+                for row in resp["values"]:
+                    csvrow = dict(
+                        channel=("%s/%s" % tuple(channel)),
+                        time=datetime.datetime.fromtimestamp(row.get("t") or row.get("timestamp")).strftime(
+                            args.time_format
+                        ),
+                        average=format_value(row.get("v") or row.get("value"), args.decimal_places),
+                    )
+                    if "min" in row:
+                        csvrow["min"] = format_value(row["min"], args.decimal_places)
+                    if "max" in row:
+                        csvrow["max"] = format_value(row["max"], args.decimal_places)
 
                 writer.writerow(csvrow)
     finally:
