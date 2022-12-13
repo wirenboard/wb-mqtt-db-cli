@@ -1,1 +1,1 @@
-buildDebSbuild defaultTargets: 'bullseye-host'
+buildDebSbuild defaultTargets: 'stretch-host'
