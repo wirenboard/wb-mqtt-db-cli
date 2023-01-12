@@ -5,8 +5,8 @@ import csv
 import datetime
 import sys
 import time
-
 import urllib.parse
+
 import dateutil.parser
 import paho.mqtt.client as mqtt
 import paho_socket
@@ -31,7 +31,14 @@ def main():
 
     parser.add_argument("--help", action="help", help="show this help message and exit")
 
-    parser.add_argument("-h", "--host", dest="host", type=str, help="MQTT host", default="unix:///var/run/mosquitto/mosquitto.sock")
+    parser.add_argument(
+        "-h",
+        "--host",
+        dest="host",
+        type=str,
+        help="MQTT host",
+        default="unix:///var/run/mosquitto/mosquitto.sock",
+    )
 
     parser.add_argument("-u", "--username", dest="username", type=str, help="MQTT username", default="")
 
@@ -143,7 +150,7 @@ def main():
         min_interval = (time_interval / args.limit).total_seconds() * 1000
 
     url = urllib.parse.urlparse(args.host)
-    if url.scheme == 'unix':
+    if url.scheme == "unix":
         client = paho_socket.Client("wb-mqtt-db-cli")
         if args.username:
             client.username_pw_set(args.username, args.password)
