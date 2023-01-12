@@ -1,3 +1,9 @@
+wb-mqtt-db-cli (1.4.2) stable; urgency=medium
+
+  * Code formatting
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Thu, 12 Jan 2023 16:53:16 +0300
+
 wb-mqtt-db-cli (1.4.1) stable; urgency=medium
 
   * Add message output if query result is empty
