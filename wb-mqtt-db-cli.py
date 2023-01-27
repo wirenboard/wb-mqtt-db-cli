@@ -245,6 +245,7 @@ def main():
 
                 writer.writerow(csvrow)
     finally:
+        client.loop_stop()
         csvfile.close()
 
 
