@@ -1,5 +1,5 @@
-#!/usr/bin/python3
-# import pprint
+#!/usr/bin/env python3
+
 import argparse
 import csv
 import datetime
@@ -82,6 +82,14 @@ def main():
         dest="auto_interval",
         action="store_true",
         help='Automatically estimate the interval between data points based on "limit", "from" and "start"',
+    )
+
+    parser.add_argument(
+        "--max-records",
+        dest="max_records",
+        type=int,
+        help="Max number of records within interval",
+        default=None,
     )
 
     parser.add_argument(
@@ -172,7 +180,7 @@ def main():
     if args.output_fname == "-":
         csvfile = sys.stdout
     else:
-        csvfile = open(args.output_fname, "wb")
+        csvfile = open(args.output_fname, "w")
 
     try:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=args.delimiter)
@@ -185,15 +193,19 @@ def main():
                 "timestamp": {},
                 "limit": args.limit,
                 "ver": 1,
+                "with_milliseconds": True,
             }
 
             if args.date_from:
                 rpc_params["timestamp"]["gt"] = int(time.mktime(date_from.timetuple()))
             if args.date_to:
-                rpc_params["timestamp"]["lt"] = time.mktime(date_to.timetuple())
+                rpc_params["timestamp"]["lt"] = int(time.mktime(date_to.timetuple()))
 
             if min_interval:
                 rpc_params["min_interval"] = min_interval
+
+            if args.max_records:
+                rpc_params["max_records"] = args.max_records
 
             if args.timeout:
                 rpc_params["request_timeout"] = args.timeout
@@ -233,6 +245,7 @@ def main():
 
                 writer.writerow(csvrow)
     finally:
+        client.loop_stop()
         csvfile.close()
 
 

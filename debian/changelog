@@ -1,3 +1,10 @@
+wb-mqtt-db-cli (1.4.3) stable; urgency=medium
+
+  * Fix broken `-o/--output-fname` option
+  * Add `--max-records` option
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 27 Jan 2023 15:21:00 +0400
+
 wb-mqtt-db-cli (1.4.2) stable; urgency=medium
 
   * Code formatting
