@@ -7,8 +7,8 @@ import sys
 import time
 
 import dateutil.parser
-from wb_common.mqtt_client import DEFAULT_BROKER_URL, MQTTClient
 from mqttrpc.client import MQTTRPCError, TMQTTRPCClient
+from wb_common.mqtt_client import DEFAULT_BROKER_URL, MQTTClient
 
 
 def format_value(value_str, decimal_places=None):
