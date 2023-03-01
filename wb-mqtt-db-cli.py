@@ -152,7 +152,7 @@ def main():
     client = MQTTClient("wb-mqtt-db-cli", args.broker_url)
     rpc_client = TMQTTRPCClient(client)
     client.on_message = rpc_client.on_mqtt_message
-    client.connect()
+    client.start()
 
     channels = [channel.split("/", 2) for channel in args.channels]
 
@@ -225,7 +225,7 @@ def main():
 
                 writer.writerow(csvrow)
     finally:
-        client.disconnect()
+        client.stop()
         csvfile.close()
 
 
