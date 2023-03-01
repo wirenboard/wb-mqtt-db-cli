@@ -5,12 +5,10 @@ import csv
 import datetime
 import sys
 import time
-import urllib.parse
 
 import dateutil.parser
-import paho.mqtt.client as mqtt
-import paho_socket
 from mqttrpc.client import MQTTRPCError, TMQTTRPCClient
+from wb_common.mqtt_client import DEFAULT_BROKER_URL, MQTTClient
 
 
 def format_value(value_str, decimal_places=None):
@@ -32,19 +30,13 @@ def main():
     parser.add_argument("--help", action="help", help="show this help message and exit")
 
     parser.add_argument(
-        "-h",
-        "--host",
-        dest="host",
+        "-b",
+        "--broker",
+        dest="broker_url",
         type=str,
-        help="MQTT host",
-        default="unix:///var/run/mosquitto/mosquitto.sock",
+        help="MQTT broker url",
+        default=DEFAULT_BROKER_URL,
     )
-
-    parser.add_argument("-u", "--username", dest="username", type=str, help="MQTT username", default="")
-
-    parser.add_argument("-P", "--password", dest="password", type=str, help="MQTT password", default="")
-
-    parser.add_argument("-p", "--port", dest="port", type=int, help="MQTT port", default="1883")
 
     parser.add_argument("--from", dest="date_from", type=str, help="start date", default=None)
 
@@ -157,22 +149,10 @@ def main():
             parser.error("--from is greater than --to (or in future)")
         min_interval = (time_interval / args.limit).total_seconds() * 1000
 
-    url = urllib.parse.urlparse(args.host)
-    if url.scheme == "unix":
-        client = paho_socket.Client("wb-mqtt-db-cli")
-        if args.username:
-            client.username_pw_set(args.username, args.password)
-        client.sock_connect(url.path)
-    else:
-        client = mqtt.Client("wb-mqtt-db-cli")
-        if args.username:
-            client.username_pw_set(args.username, args.password)
-        client.connect(args.host, args.port)
-
-    client.loop_start()
-
+    client = MQTTClient("wb-mqtt-db-cli", args.broker_url)
     rpc_client = TMQTTRPCClient(client)
     client.on_message = rpc_client.on_mqtt_message
+    client.start()
 
     channels = [channel.split("/", 2) for channel in args.channels]
 
@@ -245,7 +225,7 @@ def main():
 
                 writer.writerow(csvrow)
     finally:
-        client.loop_stop()
+        client.stop()
         csvfile.close()
 
 
