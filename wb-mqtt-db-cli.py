@@ -222,8 +222,7 @@ def main():
                         csvrow["min"] = format_value(row["min"], args.decimal_places)
                     if "max" in row:
                         csvrow["max"] = format_value(row["max"], args.decimal_places)
-
-                writer.writerow(csvrow)
+                    writer.writerow(csvrow)
     finally:
         client.stop()
         csvfile.close()
