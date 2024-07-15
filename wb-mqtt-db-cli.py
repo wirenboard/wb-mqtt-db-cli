@@ -152,7 +152,11 @@ def main():
     client = MQTTClient("wb-mqtt-db-cli", args.broker_url)
     rpc_client = TMQTTRPCClient(client)
     client.on_message = rpc_client.on_mqtt_message
-    client.start()
+    try:
+        client.start()
+    except (ConnectionError, ConnectionRefusedError):
+        print(f"Cannot connect to broker {args.broker_url}")
+        sys.exit(1)
 
     channels = [channel.split("/", 2) for channel in args.channels]
 
@@ -229,4 +233,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit(0)
