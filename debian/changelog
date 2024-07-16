@@ -1,3 +1,9 @@
+wb-mqtt-db-cli (1.4.6) stable; urgency=medium
+
+  * Fix connection error handling
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 15 Jul 2024 16:27:00 +0400
+
 wb-mqtt-db-cli (1.4.5) stable; urgency=medium
 
   * Fix error that caused to print only one result row
