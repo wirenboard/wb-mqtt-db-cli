@@ -1,3 +1,9 @@
+wb-mqtt-db-cli (1.4.8) stable; urgency=medium
+
+  * Enable angry pylint. No functional changes
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Mon, 26 May 2025 13:24:34 +0300
+
 wb-mqtt-db-cli (1.4.7) stable; urgency=medium
 
   * Fix lintian
