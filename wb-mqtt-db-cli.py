@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# pylint: disable=invalid-name
 import argparse
 import csv
 import datetime
@@ -13,14 +13,13 @@ from wb_common.mqtt_client import DEFAULT_BROKER_URL, MQTTClient
 
 def format_value(value_str, decimal_places=None):
     if decimal_places and decimal_places >= 0:
-        format_str = "%%.%df" % decimal_places
+        format_str = f"%%.{decimal_places}f"
 
         return format_str % float(value_str)
-    else:
-        return value_str
+    return value_str
 
 
-def main():
+def main():  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
     parser = argparse.ArgumentParser(
         description="wb-mqtt-db Console Client",
         add_help=False,
@@ -164,7 +163,7 @@ def main():
     if args.output_fname == "-":
         csvfile = sys.stdout
     else:
-        csvfile = open(args.output_fname, "w")
+        csvfile = open(args.output_fname, "w", encoding="utf-8")  # pylint: disable=consider-using-with
 
     try:
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=args.delimiter)
@@ -202,7 +201,8 @@ def main():
             except MQTTRPCError as err:
                 if err.code == -32100:
                     print(
-                        "ERROR: Backend wb-mqtt-db failed to process request in time. Consider increasing timeout (--timeout).",
+                        "ERROR: Backend wb-mqtt-db failed to process request in time. "
+                        + "Consider increasing timeout (--timeout).",
                         file=sys.stderr,
                     )
                     return
@@ -212,16 +212,16 @@ def main():
                 writer.writeheader()
 
             if len(resp["values"]) == 0:
-                print("No records for %s/%s channel" % tuple(channel))
+                print(f"No records for {channel[0]}/{channel[1]} channel")
             else:
                 for row in resp["values"]:
-                    csvrow = dict(
-                        channel=("%s/%s" % tuple(channel)),
-                        time=datetime.datetime.fromtimestamp(row.get("t") or row.get("timestamp")).strftime(
-                            args.time_format
-                        ),
-                        average=format_value(row.get("v") or row.get("value"), args.decimal_places),
-                    )
+                    csvrow = {
+                        "channel": f"{channel[0]}/{channel[1]}",
+                        "time": datetime.datetime.fromtimestamp(
+                            row.get("t") or row.get("timestamp")
+                        ).strftime(args.time_format),
+                        "average": format_value(row.get("v") or row.get("value"), args.decimal_places),
+                    }
                     if "min" in row:
                         csvrow["min"] = format_value(row["min"], args.decimal_places)
                     if "max" in row:
