@@ -1,4 +1,3 @@
-buildDebSbuild defaultTargets: 'bullseye-host',
-               defaultRunLintian: true,
+buildDebSbuild defaultRunLintian: true,
                defaultAngryPylint: true,
                defaultRunPythonChecks: true
