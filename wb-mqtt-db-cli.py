@@ -4,7 +4,6 @@ import argparse
 import csv
 import datetime
 import sys
-import time
 
 import dateutil.parser
 from mqttrpc.client import MQTTRPCError, TMQTTRPCClient
@@ -12,14 +11,19 @@ from wb_common.mqtt_client import DEFAULT_BROKER_URL, MQTTClient
 
 
 def format_value(value_str, decimal_places=None):
-    if decimal_places and decimal_places >= 0:
-        format_str = f"%%.{decimal_places}f"
-
-        return format_str % float(value_str)
+    if decimal_places is not None and decimal_places >= 0:
+        return format(float(value_str), f".{decimal_places}f")
     return value_str
 
 
-def main():  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
+def to_aware(dt):
+    """Treat a timestamp parsed without an explicit offset as local time."""
+    if dt.tzinfo is None:
+        return dt.astimezone()
+    return dt
+
+
+def get_parser():
     parser = argparse.ArgumentParser(
         description="wb-mqtt-db Console Client",
         add_help=False,
@@ -122,17 +126,22 @@ def main():  # pylint: disable=too-many-locals, too-many-branches, too-many-stat
         help="List of channels to request",
     )
 
+    return parser
+
+
+def main():  # pylint: disable=too-many-locals, too-many-branches, too-many-statements
+    parser = get_parser()
     args = parser.parse_args()
 
     if args.date_from:
-        date_from = dateutil.parser.parse(args.date_from)
+        date_from = to_aware(dateutil.parser.parse(args.date_from))
     else:
         date_from = None
 
     if args.date_to:
-        date_to = dateutil.parser.parse(args.date_to)
+        date_to = to_aware(dateutil.parser.parse(args.date_to))
     else:
-        date_to = datetime.datetime.now()
+        date_to = datetime.datetime.now().astimezone()
 
     if args.min_interval:
         min_interval = args.min_interval
@@ -180,9 +189,9 @@ def main():  # pylint: disable=too-many-locals, too-many-branches, too-many-stat
             }
 
             if args.date_from:
-                rpc_params["timestamp"]["gt"] = int(time.mktime(date_from.timetuple()))
+                rpc_params["timestamp"]["gt"] = int(date_from.timestamp())
             if args.date_to:
-                rpc_params["timestamp"]["lt"] = int(time.mktime(date_to.timetuple()))
+                rpc_params["timestamp"]["lt"] = int(date_to.timestamp())
 
             if min_interval:
                 rpc_params["min_interval"] = min_interval
@@ -205,14 +214,14 @@ def main():  # pylint: disable=too-many-locals, too-many-branches, too-many-stat
                         + "Consider increasing timeout (--timeout).",
                         file=sys.stderr,
                     )
-                    return
+                    sys.exit(1)
                 raise err
 
             if i == 0:
                 writer.writeheader()
 
             if len(resp["values"]) == 0:
-                print(f"No records for {channel[0]}/{channel[1]} channel")
+                print(f"No records for {channel[0]}/{channel[1]} channel", file=sys.stderr)
             else:
                 for row in resp["values"]:
                     csvrow = {

@@ -1,3 +1,13 @@
+wb-mqtt-db-cli (1.5.0) stable; urgency=medium
+
+  * Add bash completions
+  * Fix --decimal-places: formatting failed with an error, zero places were ignored
+  * Fix --from/--to handling: timezone offset was dropped, shifting the requested range
+  * Print informational messages to stderr, keeping CSV output on stdout clean
+  * Exit with non-zero code if the backend fails to process a request in time
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 24 Aug 2026 12:00:00 +0400
+
 wb-mqtt-db-cli (1.4.9) stable; urgency=medium
 
   * Update debianization. No functional changes
