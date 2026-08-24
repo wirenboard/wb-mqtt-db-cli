@@ -5,5 +5,6 @@ PREFIX = /usr
 all:
 clean :
 
-install: all
+install:
 	install -Dm0755 wb-mqtt-db-cli.py $(DESTDIR)$(PREFIX)/bin/wb-mqtt-db-cli
+	install -Dm0644 completions/*.bash -t $(DESTDIR)$(PREFIX)/share/bash-completion/completions
