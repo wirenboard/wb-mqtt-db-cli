@@ -14,5 +14,6 @@ Depends: ${shlibs:Depends},
          python3-mqttrpc (>= 1.1),
          python3-dateutil,
          python3-wb-common (>= 2.1.0)
+Suggests: wb-mqtt-db
 Description: CLI for wb-mqtt-db
  wb-mqtt-db Console Client.
